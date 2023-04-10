@@ -7,6 +7,14 @@ import datetime
 import time
 import shutil
 
+
+import tkinter as tk
+import cv2
+from PIL import Image, ImageTk
+
+import util
+from test import test
+
 import cv2
 from fastapi import FastAPI, File, UploadFile, Form, UploadFile, Response
 from fastapi.responses import FileResponse
@@ -40,21 +48,29 @@ async def login(file: UploadFile = File(...)):
     file.filename = f"{uuid.uuid4()}.png"
     contents = await file.read()
 
-    # example of how you can save the file
-    with open(file.filename, "wb") as f:
-        f.write(contents)
+    label = test(
+                image=cv2.imread(file.filename), # point of change
+                model_dir='PATH_OF_ANTI_SPPOF_MODEL',   # point of change
+                device_id=0
+                )
+    
+    if label == 1:
+        # example of how you can save the file
+        with open(file.filename, "wb") as f:
+            f.write(contents)
 
-    user_name, match_status = recognize(cv2.imread(file.filename))
+        user_name, match_status = recognize(cv2.imread(file.filename))
 
-    if match_status:
-        epoch_time = time.time()
-        date = time.strftime('%Y%m%d', time.localtime(epoch_time))
-        with open(os.path.join(ATTENDANCE_LOG_DIR, '{}.csv'.format(date)), 'a') as f:
-            f.write('{},{},{}\n'.format(user_name, datetime.datetime.now(), 'IN'))
-            f.close()
+        if match_status:
+            epoch_time = time.time()
+            date = time.strftime('%Y%m%d', time.localtime(epoch_time))
+            with open(os.path.join(ATTENDANCE_LOG_DIR, '{}.csv'.format(date)), 'a') as f:
+                f.write('{},{},{}\n'.format(user_name, datetime.datetime.now(), 'IN'))
+                f.close()
 
-    return {'user': user_name, 'match_status': match_status}
-
+        return {'user': user_name, 'match_status': match_status, 'label': label}
+    else:
+        return {'label': label} #point of change
 
 @app.post("/logout")
 async def logout(file: UploadFile = File(...)):

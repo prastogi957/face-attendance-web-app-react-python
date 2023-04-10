@@ -81,9 +81,14 @@ function MasterComponent() {
           })
           .then((response) => {
             console.log(response.data);
-            if (response.data.match_status == true) {
+            if (response.data.match_status == true && response.data.label==1) {
               alert("Welcome back " + response.data.user + " !");
-            } else {
+            }
+            else if(response.data.label!=1)
+            {
+              alert("You are a fake!");
+            } 
+            else {
               alert("Unknown user! Please try again or register new user!");
             }
           })
