@@ -59,7 +59,7 @@ function MasterComponent() {
   function send_img_login() {
     if (videoRef.current && canvasRef.current) {
       context = canvasRef.current.getContext("2d");
-      context.drawImage(videoRef.current, 0, 0, 400, 300);
+      context.drawImage(videoRef.current, 0, 0, 700, 500);
 
       canvasRef.current.toBlob((blob) => {
         // setLastFrame(URL.createObjectURL(blob));
@@ -102,7 +102,7 @@ function MasterComponent() {
   function send_img_logout() {
     if (videoRef.current && canvasRef.current) {
       context = canvasRef.current.getContext("2d");
-      context.drawImage(videoRef.current, 0, 0, 400, 300);
+      context.drawImage(videoRef.current, 0, 0, 700, 500);
 
       canvasRef.current.toBlob((blob) => {
         // setLastFrame(URL.createObjectURL(blob));
@@ -177,7 +177,7 @@ function saveLastFrame(
 
     if (videoRef.current && canvasRef.current) {
       context = canvasRef.current.getContext("2d");
-      context.drawImage(videoRef.current, 0, 0, 400, 300);
+      context.drawImage(videoRef.current, 0, 0, 700, 500);
 
       canvasRef.current.toBlob((blob) => {
         setLastFrame(URL.createObjectURL(blob));
@@ -208,11 +208,11 @@ function Webcam({ lastFrame, setLastFrame }) {
   useEffect(() => {
     if (isStreaming) {
       context = canvasRef.current.getContext("2d");
-      context.drawImage(videoRef.current, 0, 0, 400, 300);
+      context.drawImage(videoRef.current, 0, 0, 700, 500);
 
       requestAnimationFrame(() => {
         setTimeout(() => {
-          context.drawImage(videoRef.current, 0, 0, 400, 300);
+          context.drawImage(videoRef.current, 0, 0, 700, 500);
 
           canvasRef.current.toBlob((blob) => {
             setLastFrame(URL.createObjectURL(blob));
@@ -225,7 +225,7 @@ function Webcam({ lastFrame, setLastFrame }) {
 
   return (
     <div className="webcam">
-      <canvas ref={canvasRef} width={400} height={300} />
+      <canvas ref={canvasRef} width={700} height={500} />
       <video ref={videoRef} autoPlay playsInline />
     </div>
   );
