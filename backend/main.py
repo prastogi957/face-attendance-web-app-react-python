@@ -6,13 +6,13 @@ import pickle
 import datetime
 import time
 import shutil
+from  numpy import asarray
 
-
-import tkinter as tk
+#import tkinter as tk
 import cv2
-from PIL import Image, ImageTk
+from PIL import Image
 
-import util
+#import util
 from test import test
 
 import cv2
@@ -47,18 +47,35 @@ async def login(file: UploadFile = File(...)):
 
     file.filename = f"{uuid.uuid4()}.png"
     contents = await file.read()
+    with open(file.filename, "wb") as f:
+           f.write(contents)
 
+
+    img_test = Image.open(file.filename)
+    img_test=img_test.convert('RGB')
+
+    print(type(file.filename))
+    print(type(file))
+    print(type(contents))
+    print(type(cv2.imread(file.filename)))
+
+    print("-----------------------")
+
+    print(type(img_test))
+
+    final_img = asarray(img_test)
+
+    print(type(final_img))
+    print(final_img.shape)
     label = test(
-                image=cv2.imread(file.filename), # point of change
-                model_dir='PATH_OF_ANTI_SPPOF_MODEL',   # point of change
+              #  image=cv2.imread(file.filename), # point of change
+                image=final_img,
+		model_dir='/home/ubuntu/Silent-Face-Anti-Spoofing/resources/anti_spoof_models',   # point of change
                 device_id=0
                 )
     
     if label == 1:
         # example of how you can save the file
-        with open(file.filename, "wb") as f:
-            f.write(contents)
-
         user_name, match_status = recognize(cv2.imread(file.filename))
 
         if match_status:
@@ -67,9 +84,17 @@ async def login(file: UploadFile = File(...)):
             with open(os.path.join(ATTENDANCE_LOG_DIR, '{}.csv'.format(date)), 'a') as f:
                 f.write('{},{},{}\n'.format(user_name, datetime.datetime.now(), 'IN'))
                 f.close()
-
+        print("label-passed- ",label)
+        print("match_status - ",match_status)
+        print("user - ",user_name)
+        print("user type",type(user_name))
+        print("match_status - type - ",type(match_status))
+        print("label - type - ",type(label))
+        label=str(label)
         return {'user': user_name, 'match_status': match_status, 'label': label}
     else:
+        label=str(label)
+        print("label-passed- 2",label)
         return {'label': label} #point of change
 
 @app.post("/logout")
