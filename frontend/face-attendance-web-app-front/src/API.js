@@ -1,2 +1,2 @@
-const API_BASE_URL = "http://43.205.240.198";
+const API_BASE_URL = "http://localhost:8000";
 export default API_BASE_URL;

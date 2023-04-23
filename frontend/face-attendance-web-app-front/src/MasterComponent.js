@@ -11,9 +11,10 @@ function MasterComponent() {
   const [showWebcam, setShowWebcam] = useState(true);
   const [showImg, setShowImg] = useState(false);
 
-  function register_new_user_ok(text) {
+  function register_new_user_ok(text,password) {
     if (lastFrame) {
       const apiUrl = API_BASE_URL + "/register_new_user?text=" + text;
+      // const apiUrl = API_BASE_URL + "/register_new_user";
       console.log(typeof lastFrame);
       fetch(lastFrame)
         .then((response) => response.blob())
@@ -23,6 +24,8 @@ function MasterComponent() {
           });
           const formData = new FormData();
           formData.append("file", file);
+          formData.append("username",text);
+          formData.append("password",password)
 
           axios
             .post(apiUrl, formData, {
@@ -243,7 +246,7 @@ function Buttons({
   downloadLogs,
 }) {
   const [isRegistering, setIsRegistering] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
 
   const [zIndexAdmin, setZIndexAdmin] = useState(1);
   const [zIndexRegistering, setZIndexRegistering] = useState(1);
@@ -257,6 +260,12 @@ function Buttons({
   };
 
   const [value, setValue] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handlePassword = (event) => {
+    // console.log(event.target.value)
+    setPassword(event.target.value)
+  }
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -283,6 +292,13 @@ function Buttons({
           value={value}
           onChange={handleChange}
         />
+         <input
+          className="register-text"
+          type="text"
+          placeholder="Enter Password"
+          value={password}
+          onChange={handlePassword}
+        />
       </div>
       <div
         className="register-ok-container"
@@ -295,7 +311,7 @@ function Buttons({
             isRegistering ? "visible" : "hidden"
           } register-ok-button`}
           onClick={async () => {
-            setIsAdmin(false);
+             setIsAdmin(true);
             setIsRegistering(false);
 
             changeZIndexAdmin(1);
@@ -303,7 +319,7 @@ function Buttons({
 
             setShowWebcam(true);
             setShowImg(false);
-            register_new_user_ok(value);
+            register_new_user_ok(value,password);
           }}
         ></button>
       </div>
@@ -318,7 +334,7 @@ function Buttons({
             isRegistering ? "visible" : "hidden"
           } register-cancel-button`}
           onClick={async () => {
-            setIsAdmin(false);
+             setIsAdmin(true);
             setIsRegistering(false);
 
             changeZIndexAdmin(1);
@@ -393,7 +409,7 @@ function Buttons({
           }}
         ></button>
       </div>
-      <div
+      {/* <div
         className="goback-container"
         style={{
           zIndex: zIndexAdmin,
@@ -409,7 +425,7 @@ function Buttons({
             changeZIndexRegistering(1);
           }}
         ></button>
-      </div>
+      </div> */}
 
       <div
         className="download-container"
@@ -417,7 +433,7 @@ function Buttons({
           zIndex: zIndexAdmin,
         }}
       >
-        <button
+        {/* <button
           className={`${isAdmin ? "visible" : "hidden"} download-button`}
           onClick={() => {
             setIsAdmin(false);
@@ -428,7 +444,7 @@ function Buttons({
 
             downloadLogs();
           }}
-        ></button>
+        ></button> */}
       </div>
     </div>
   );
