@@ -9,7 +9,7 @@ import datetime
 import time
 import shutil
 from  numpy import asarray
-import hashlib
+
 #import tkinter as tk
 import cv2
 from PIL import Image
@@ -51,37 +51,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#@app.middleware("http")
-#async def restrict_access_to_allowed_ips(request: Request, call_next):
-#    # Get the client's IP address from the request
-#    client_ip = request.client.host
-#    #client_ip = request.headers.get('X-Forwarded-For') or request.client.host
-#    #client_ip = request.remote_addr
-#    #client_ip=""
-#    #response = request.get("https://httpbin.org/ip")
-#    #if response.status_code == 200:
-#    # Extract the public IP address from the response
-#    #client_ip = response.json().get("origin")
-#    #return {"public_ip": public_ip}
-#    print(client_ip)
-#    #print(response)
-#    print("inside wrapper")
-#    query="SELECT userip FROM USERS_LOGIN_ACCESS;"
-#    mycursor.execute(query)
-#    myresult = mycursor.fetchall() 
-#    allowed_ip=[]
-#    allowed_ip.append('106.79.202.177')
-#    for ele in myresult:
-#        allowed_ip.append(ele[0])
-#    # Check if the client's IP address is in the allowed list
-#    if client_ip not in allowed_ip:
-#        # Return a forbidden response with a custom message
-#        return Response(content="Forbidden", status_code=403)
-#
-#    # Pass the request to the next middleware or route handler
-#    response = await call_next(request)
-#
-#    return response
+@app.middleware("http")
+async def restrict_access_to_allowed_ips(request: Request, call_next):
+    # Get the client's IP address from the request
+    client_ip = request.client.host
+    print(client_ip)
+    print("inside wrapper")
+    query="SELECT userip FROM USERS_LOGIN_ACCESS;"
+    mycursor.execute(query)
+    myresult = mycursor.fetchall() 
+    allowed_ip=[]
+    allowed_ip.append('106.79.202.177')
+    for ele in myresult:
+        allowed_ip.append(ele[0])
+    # Check if the client's IP address is in the allowed list
+    if client_ip not in allowed_ip:
+        # Return a forbidden response with a custom message
+        return Response(content="Forbidden", status_code=403)
+
+    # Pass the request to the next middleware or route handler
+    response = await call_next(request)
+
+    return response
 
 #@app.get("/restricted")
 @app.post("/login")
@@ -91,23 +82,6 @@ async def login(username:str=Form(...),password:str=Form(...),file: UploadFile =
     print(f"Recieved data: username={username},password={password}")
     file.filename = f"{uuid.uuid4()}.png"
     contents = await file.read()
-    passwordh = hashlib.sha256(password.encode('utf-8')).hexdigest()
-    query="SELECT password from USERS WHERE username=\'"+username+"\';"
-    mycursor.execute(query)
-    myresult = mycursor.fetchall()
-    flag1=False
-    if len(myresult)!=0:
-     if passwordh==myresult[0][0]:
-         msg="user verified"
-         #print(msg)
-         #conn.sendall(msg.encode())
-         flag1=True
-     else:
-         msg="login credentials invalid"
-         #conn.senadll(msg.encode())
-         flag1=False
-    else:
-       print("invalid users")
     with open(file.filename, "wb") as f:
            f.write(contents)
 
@@ -152,13 +126,6 @@ async def login(username:str=Form(...),password:str=Form(...),file: UploadFile =
         print("match_status - type - ",type(match_status))
         print("label - type - ",type(label))
         label=str(label)
-        src_ip=""
-        if flag1:
-            sql = "UPDATE USERS_GATEWAY_ACCESS SET FLAG2=\"1\" WHERE username=\""+user_name+"\""+";"
-            #val = (username,src_ip,"SPAMTLSUSERVD")
-            mycursor.execute(sql)
-            mydb.commit()
-            print("all success") 
         return {'user': user_name, 'match_status': match_status, 'label': label}
     else:
         label=str(label)
