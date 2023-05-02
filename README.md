@@ -2,8 +2,6 @@
 
 Face attendance + face recognition web app with React and Python!
 
-[![Watch the video](https://img.youtube.com/vi/yWmW5uEtNws/0.jpg)](https://www.youtube.com/watch?v=yWmW5uEtNws)
-
 ## deployment
 
 ### backend
@@ -37,7 +35,7 @@ And put this config into the file (replace the IP address with your EC2 instance
  
  Clone repository.
  
-    git clone https://github.com/computervisiondeveloper/face-attendance-web-app-react-python.git
+    git clone https://github.com/prastogi957/face-attendance-web-app-react-python.git
    
     cd face-attendance-web-app-react-python
     
@@ -101,7 +99,7 @@ Update EC2 security-group settings for your instance to allow HTTP traffic to po
  
 #### Launch App
  
-    git clone https://github.com/computervisiondeveloper/face-attendance-web-app-react-python.git
+    git clone https://github.com/prastogi957/face-attendance-web-app-react-python.git
    
     cd face-attendance-web-app-react-python
     
