@@ -359,7 +359,7 @@ function Buttons({
             changeZIndexRegistering(3);
             // saveFrameToDisk(canvasRef, lastFrame, setLastFrame);
             // setIsRegistering(true);
-            send_img_login(value,password);
+           // send_img_login(value,password);
           }}
         ></button>
       </div>
